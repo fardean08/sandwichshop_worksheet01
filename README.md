@@ -6,7 +6,9 @@ A simple Flutter app for ordering sandwiches, built for learning and demonstrati
 
 - **Select Sandwich Type:** Choose between "Footlong" and "Six-inch" sandwiches.
 - **Adjust Quantity:** Add or remove sandwiches, with a configurable maximum quantity.
-- **Live Order Display:** Instantly see your current order (quantity and type).
+- **Toasted Option:** Toggle whether your sandwich is toasted or untoasted.
+- **Live Order Display:** Instantly see your current order (quantity, type, and toasted status).
+- **Price Calculation:** Total price is calculated using the PricingRepository (£7 for six-inch, £11 for footlong).
 - **Styled Buttons:** Custom button widget for consistent UI.
 
 ## Screenshots
@@ -45,7 +47,12 @@ A simple Flutter app for ordering sandwiches, built for learning and demonstrati
 ```
 sandwichshop_worksheet1/
 ├── lib/
-│   └── main.dart      # Main application code
+│   ├── main.dart      # Main application code
+│   └── repositories/
+│       └── pricing_repository.dart # Pricing logic
+├── test/
+│   └── repositories/
+│       └── pricing_repository_test.dart # PricingRepository unit tests
 ├── pubspec.yaml       # Flutter dependencies
 ```
 
@@ -54,26 +61,39 @@ sandwichshop_worksheet1/
 - **main.dart:**  
   - `main()` launches the app.
   - `App` is the root widget, using `MaterialApp`.
-  - `OrderScreen` is a stateful widget managing sandwich type and quantity.
+  - `OrderScreen` is a stateful widget managing sandwich type, quantity, and toasted status.
   - `StyledButton` is a reusable button widget.
   - `OrderItemDisplay` shows the current order summary.
+  - Integrates PricingRepository to show total price.
 
-### Key Widgets
+- **repositories/pricing_repository.dart:**
+  - Contains `PricingRepository` for calculating total price based on sandwich type and quantity.
 
-- **OrderScreen:**  
-  - Lets users select sandwich type and adjust quantity.
-  - Prevents exceeding the maximum quantity or going below zero.
+## Toasted Sandwich Option
 
-- **StyledButton:**  
-  - Customizes button color and disables when not allowed.
+- Toggle the toasted switch to choose between toasted and untoasted sandwiches.
+- The switch is uniquely identified for widget testing.
 
-- **OrderItemDisplay:**  
-  - Displays the current quantity and sandwich type.
+## Price Calculation
+
+- Six-inch sandwich: £7 each
+- Footlong sandwich: £11 each
+- Total price is displayed in the order summary.
+
+## Testing
+
+- Widget and unit tests are included.
+- To run all tests:
+  ```
+  flutter test
+  ```
+- Widget tests cover button taps and switch toggling.
+- Unit tests verify PricingRepository logic.
 
 ## Customization
 
 - Change the maximum quantity by editing `OrderScreen(maxQuantity: 5)` in `main.dart`.
-- Add more sandwich types or features by extending the `OrderScreen` logic.
+- Add more sandwich types or features by extending the `OrderScreen` logic and PricingRepository.
 
 ## Contributing
 
