@@ -4,7 +4,6 @@ void main() {
   runApp(const App());
 }
 
-// Step 1: Use OrderScreen instead of static Scaffold
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -12,42 +11,91 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Sandwich Shop App',
-      home: OrderScreen(),
+      home: OrderScreen(maxQuantity: 5),
     );
   }
 }
 
-// Step 2: Create OrderScreen (stateful) but no interactivity yet
+// --- OrderScreen now interactive ---
 class OrderScreen extends StatefulWidget {
-  const OrderScreen({super.key});
+  final int maxQuantity;
+  const OrderScreen({super.key, this.maxQuantity = 10});
 
   @override
   State<OrderScreen> createState() => _OrderScreenState();
 }
 
 class _OrderScreenState extends State<OrderScreen> {
-  int _quantity = 5;
+  int _quantity = 0;
   String _sandwichType = 'Footlong';
+
+  void _increaseQuantity() {
+    if (_quantity < widget.maxQuantity) {
+      setState(() => _quantity++);
+    }
+  }
+
+  void _decreaseQuantity() {
+    if (_quantity > 0) {
+      setState(() => _quantity--);
+    }
+  }
+
+  void _setSandwichType(String type) {
+    setState(() => _sandwichType = type);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bool canAdd = _quantity < widget.maxQuantity;
+    final bool canRemove = _quantity > 0;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Sandwich Counter')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Reuse old OrderItemDisplay
             OrderItemDisplay(_quantity, _sandwichType),
-
-            // Keep some of the old compact display for reference
             const SizedBox(height: 20),
+
+            // Add sandwich type selector
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                OrderCompactDisplay(3, 'BLT sandwich(es)'),
-                SizedBox(width: 8),
-                OrderCompactDisplay(2, 'Veggie sandwich(es)'),
+              children: [
+                StyledButton(
+                  text: 'Footlong',
+                  onPressed: () => _setSandwichType('Footlong'),
+                  backgroundColor: _sandwichType == 'Footlong'
+                      ? Colors.green
+                      : Colors.grey.shade400,
+                ),
+                const SizedBox(width: 10),
+                StyledButton(
+                  text: 'Six-inch',
+                  onPressed: () => _setSandwichType('Six-inch'),
+                  backgroundColor: _sandwichType == 'Six-inch'
+                      ? Colors.green
+                      : Colors.grey.shade400,
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+
+            // Add / Remove buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                StyledButton(
+                  text: 'Add',
+                  onPressed: canAdd ? _increaseQuantity : null,
+                  backgroundColor: Colors.blue,
+                ),
+                StyledButton(
+                  text: 'Remove',
+                  onPressed: canRemove ? _decreaseQuantity : null,
+                  backgroundColor: Colors.red,
+                ),
               ],
             ),
           ],
@@ -57,38 +105,45 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-class OrderItemDisplay extends StatelessWidget {
-  final int quantity;
-  final String itemType;
+// --- Styled button widget ---
+class StyledButton extends StatelessWidget {
+  final String text;
+  final VoidCallback? onPressed;
+  final Color backgroundColor;
 
-  const OrderItemDisplay(this.quantity, this.itemType, {super.key});
+  const StyledButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.backgroundColor = Colors.blue,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 300,
-      height: 100,
-      color: Colors.blue,
-      alignment: Alignment.center,
-      child: Text(
-        '$quantity $itemType sandwich(es)',
-        style: const TextStyle(color: Colors.white, fontSize: 18),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: backgroundColor,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       ),
+      child: Text(text),
     );
   }
 }
 
-class OrderCompactDisplay extends StatelessWidget {
+// --- Simplified OrderItemDisplay ---
+class OrderItemDisplay extends StatelessWidget {
   final int quantity;
-  final String itemType;
+  final String sandwichType;
 
-  const OrderCompactDisplay(this.quantity, this.itemType, {super.key});
+  const OrderItemDisplay(this.quantity, this.sandwichType, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4.0),
-      child: Text('$quantity $itemType 🥪'),
+    return Text(
+      '$quantity $sandwichType sandwich(es)',
+      style: const TextStyle(fontSize: 22),
     );
   }
 }
