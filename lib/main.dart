@@ -16,7 +16,8 @@ class App extends StatelessWidget {
   }
 }
 
-// --- OrderScreen now interactive ---
+// ------------------ ORDER SCREEN ------------------
+
 class OrderScreen extends StatefulWidget {
   final int maxQuantity;
   const OrderScreen({super.key, this.maxQuantity = 10});
@@ -58,8 +59,7 @@ class _OrderScreenState extends State<OrderScreen> {
           children: [
             OrderItemDisplay(_quantity, _sandwichType),
             const SizedBox(height: 20),
-
-            // Add sandwich type selector
+            // --- Sandwich type selector (Sign-off 3) ---
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -81,8 +81,7 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             ),
             const SizedBox(height: 30),
-
-            // Add / Remove buttons
+            // --- Add & Remove buttons (Sign-off 1 + 2) ---
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -105,7 +104,8 @@ class _OrderScreenState extends State<OrderScreen> {
   }
 }
 
-// --- Styled button widget ---
+// ------------------ STYLED BUTTON ------------------
+
 class StyledButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -132,7 +132,8 @@ class StyledButton extends StatelessWidget {
   }
 }
 
-// --- Simplified OrderItemDisplay ---
+// ------------------ ORDER ITEM DISPLAY ------------------
+
 class OrderItemDisplay extends StatelessWidget {
   final int quantity;
   final String sandwichType;
