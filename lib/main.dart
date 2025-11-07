@@ -4,35 +4,51 @@ void main() {
   runApp(const App());
 }
 
-// Main App
+// Step 1: Use OrderScreen instead of static Scaffold
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       title: 'Sandwich Shop App',
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Sandwich Counter')),
-        body: Column(
+      home: OrderScreen(),
+    );
+  }
+}
+
+// Step 2: Create OrderScreen (stateful) but no interactivity yet
+class OrderScreen extends StatefulWidget {
+  const OrderScreen({super.key});
+
+  @override
+  State<OrderScreen> createState() => _OrderScreenState();
+}
+
+class _OrderScreenState extends State<OrderScreen> {
+  int _quantity = 5;
+  String _sandwichType = 'Footlong';
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sandwich Counter')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Expanded(child: OrderCompactDisplay(3, 'BLT sandwich(es)')),
-                  SizedBox(width: 8),
-                  Expanded(child: OrderCompactDisplay(3, 'Club sandwich(es)')),
-                  SizedBox(width: 8),
-                  Expanded(child: OrderCompactDisplay(2, 'Veggie sandwich(es)')),
-                ],
-              ),
-            ),
-            const Expanded(
-              child: Center(
-                child: OrderItemDisplay(5, 'Footlong'),
-              ),
+            // Reuse old OrderItemDisplay
+            OrderItemDisplay(_quantity, _sandwichType),
+
+            // Keep some of the old compact display for reference
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: const [
+                OrderCompactDisplay(3, 'BLT sandwich(es)'),
+                SizedBox(width: 8),
+                OrderCompactDisplay(2, 'Veggie sandwich(es)'),
+              ],
             ),
           ],
         ),
@@ -42,122 +58,37 @@ class App extends StatelessWidget {
 }
 
 class OrderItemDisplay extends StatelessWidget {
-  final String itemType;
   final int quantity;
+  final String itemType;
 
   const OrderItemDisplay(this.quantity, this.itemType, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 400,
-      height: 200,
+      width: 300,
+      height: 100,
       color: Colors.blue,
       alignment: Alignment.center,
       child: Text(
-        '$quantity $itemType sandwich(es): ${List.filled(quantity, '🥪').join()}',
-        style: const TextStyle(color: Colors.black, fontSize: 18),
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+        '$quantity $itemType sandwich(es)',
+        style: const TextStyle(color: Colors.white, fontSize: 18),
       ),
     );
   }
 }
 
-// Compact display for top row
 class OrderCompactDisplay extends StatelessWidget {
-  final String itemType;
   final int quantity;
+  final String itemType;
 
   const OrderCompactDisplay(this.quantity, this.itemType, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 4.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          // Quantity first
-          Text(
-            '$quantity ',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
-          // Sandwich name and emoji together
-          Expanded(
-            child: Text(
-              '$itemType ${List.filled(quantity, '🥪').join()}',
-              style: const TextStyle(fontSize: 16),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Example leftover template widgets (you can remove if not needed)
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sandwich Shop App',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-      ),
-      home: const MyHomePage(title: 'My Sandwich Shop'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
-      ),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome to my shop!',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ),
+      padding: const EdgeInsets.all(4.0),
+      child: Text('$quantity $itemType 🥪'),
     );
   }
 }
