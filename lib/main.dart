@@ -29,6 +29,7 @@ class OrderScreen extends StatefulWidget {
 class _OrderScreenState extends State<OrderScreen> {
   int _quantity = 0;
   String _sandwichType = 'Footlong';
+  bool _isToasted = false;
 
   void _increaseQuantity() {
     if (_quantity < widget.maxQuantity) {
@@ -78,6 +79,21 @@ class _OrderScreenState extends State<OrderScreen> {
                       ? Colors.green
                       : Colors.grey.shade400,
                 ),
+              ],
+            ),
+            // --- Toasted switch ---
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('untoasted', style: TextStyle(fontSize: 16)),
+                Switch(
+                  key: const Key('toastedSwitch'),
+                  value: _isToasted,
+                  onChanged: (value) {
+                    setState(() => _isToasted = value);
+                  },
+                ),
+                const Text('toasted', style: TextStyle(fontSize: 16)),
               ],
             ),
             const SizedBox(height: 30),
